@@ -19,20 +19,29 @@ const showImages = (images) => {
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
-  images.forEach(image => {
+  if(!images.length <= 0){
+    images.forEach(image => {
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
   })
+  }else{
+    gallery.innerHTML = `<h1>No Results Found</h1>`
+  }
+  
 
 }
 
-const getImages = (query) => {
-  fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
+const getImages = async (query) => {
+  const spinner = document.getElementById("show-spinner")
+  spinner.classList.toggle("d-flex")
+  await fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     .then(data =>  showImages(data.hits))  //showImages(data.totalHits)
     .catch(err => console.log(err))
+
+  spinner.classList.toggle("d-flex")
 }
 
 let slideIndex = 0;
